@@ -81,4 +81,8 @@ public class CommandHandler extends Command {
 		new MessageBuilder(instance, "messages.no-permission").send(sender);
 	}
 
+	public List<AbstractCommand> getSubCommands() {
+		return subcommands;
+	}
+
 }

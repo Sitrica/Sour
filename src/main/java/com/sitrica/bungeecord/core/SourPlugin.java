@@ -2,7 +2,6 @@ package com.sitrica.bungeecord.core;
 
 import java.util.Optional;
 
-import com.sitrica.bungeecord.core.command.CommandHandler;
 import com.sitrica.bungeecord.core.manager.Manager;
 import com.sitrica.bungeecord.core.messaging.Formatting;
 
@@ -59,11 +58,6 @@ public abstract class SourPlugin extends Plugin {
 	public Optional<Configuration> getConfig() {
 		return getConfiguration("config");
 	}
-
-	/**
-	 * @return The CommandManager allocated to the plugin.
-	 */
-	public abstract CommandHandler getCommandHandler();
 
 	/**
 	 * @return The package names where managers exist to be registered.
