@@ -363,6 +363,15 @@ public class MessageBuilder {
 				sender.sendMessage(TextComponent.fromLegacyText(complete));
 		}
 	}
+	
+	/**
+	 * Trims the final message
+	 */
+	public MessageBuilder trim() {
+		get();
+		complete = complete.trim();
+		return this;
+	}
 
 	@Override
 	public String toString() {
