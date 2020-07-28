@@ -1,26 +1,24 @@
 package com.sitrica.bungeecord.core.messaging;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-
 import com.google.common.collect.Sets;
 import com.sitrica.bungeecord.core.SourPlugin;
 import com.sitrica.bungeecord.core.objects.StringList;
 import com.sitrica.bungeecord.core.placeholders.Placeholder;
 import com.sitrica.bungeecord.core.placeholders.Placeholders;
 import com.sitrica.bungeecord.core.placeholders.SimplePlaceholder;
-
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 
 public class MessageBuilder {
 
@@ -28,6 +26,8 @@ public class MessageBuilder {
 	private final List<CommandSender> senders = new ArrayList<>();
 	private final SourPlugin instance;
 	private Object defaultPlaceholderObject;
+	private ClickEvent clickEvent;
+	private HoverEvent hoverEvent;
 	private Configuration section;
 	private TextComponent complete;
 	private String[] nodes;
@@ -35,7 +35,7 @@ public class MessageBuilder {
 
 	/**
 	 * Creates a MessageBuilder with the defined nodes..
-	 * 
+	 *
 	 * @param nodes The configuration nodes from the messages.yml
 	 */
 	public MessageBuilder(SourPlugin instance, String... nodes) {
@@ -46,7 +46,7 @@ public class MessageBuilder {
 
 	/**
 	 * Creates a MessageBuilder from the defined ConfigurationSection.
-	 * 
+	 *
 	 * @param node The configuration nodes from the ConfigurationSection.
 	 * @param section The ConfigurationSection to read from.
 	 */
@@ -57,7 +57,7 @@ public class MessageBuilder {
 
 	/**
 	 * Creates a MessageBuilder with the defined nodes, and if it should contain the prefix.
-	 * 
+	 *
 	 * @param prefix The boolean to enable or disable prefixing this message.
 	 * @param nodes The configuration nodes from the messages.yml
 	 */
@@ -112,7 +112,7 @@ public class MessageBuilder {
 
 	/**
 	 * Add a placeholder to the MessageBuilder.
-	 * 
+	 *
 	 * @param placeholderObject The object to be determined in the placeholder.
 	 * @param placeholder The actual instance of the Placeholder.
 	 * @return The MessageBuilder for chaining.
@@ -124,7 +124,7 @@ public class MessageBuilder {
 
 	/**
 	 * Set the configuration to read from, by default is the messages.yml
-	 * 
+	 *
 	 * @param section The FileConfiguration to read from.
 	 * @return The MessageBuilder for chaining.
 	 */
@@ -135,7 +135,7 @@ public class MessageBuilder {
 
 	/**
 	 * Created a list replacement and ignores the placeholder object.
-	 * 
+	 *
 	 * @param syntax The syntax to check within the messages e.g: %command%
 	 * @param collection The replacement e.g: the command.
 	 * @return The MessageBuilder for chaining.
@@ -147,7 +147,7 @@ public class MessageBuilder {
 
 	/**
 	 * Created a single replacement and ignores the placeholder object.
-	 * 
+	 *
 	 * @param syntax The syntax to check within the messages e.g: %command%
 	 * @param replacement The replacement e.g: the command.
 	 * @return The MessageBuilder for chaining.
@@ -164,7 +164,7 @@ public class MessageBuilder {
 
 	/**
 	 * Created a single replacement and ignores the placeholder object with priority.
-	 * 
+	 *
 	 * @param priority The priority of the placeholder.
 	 * @param syntax The syntax to check within the messages e.g: %command%
 	 * @param replacement The replacement e.g: the command.
@@ -193,7 +193,7 @@ public class MessageBuilder {
 
 	/**
 	 * Set the placeholder object, good if you want to allow multiple placeholders.
-	 * 
+	 *
 	 * @param object The object to set
 	 * @return The MessageBuilder for chaining.
 	 */
@@ -204,7 +204,7 @@ public class MessageBuilder {
 
 	/**
 	 * Sends the message as an actionbar to the defined players.
-	 * 
+	 *
 	 * @param players the players to send to
 	 */
 	public void sendActionbar(ProxiedPlayer... players) {
@@ -213,7 +213,7 @@ public class MessageBuilder {
 
 	/**
 	 * Sends the message as a title to the defined players.
-	 * 
+	 *
 	 * @param players the players to send to
 	 */
 	public void sendTitle(ProxiedPlayer... players) {
@@ -253,7 +253,7 @@ public class MessageBuilder {
 			complete = new TextComponent(Formatting.messagesPrefixed(instance, section, nodes).trim());
 		else
 			complete = new TextComponent(Formatting.messages(section, nodes).trim());
-		complete = new TextComponent(applyPlaceholders(complete.toString()).trim());
+		complete = new TextComponent(applyPlaceholders(complete.getText()).trim());
 		return complete;
 	}
 
@@ -294,7 +294,7 @@ public class MessageBuilder {
 
 	/**
 	 * Sends the final product of the builder as a title if the players using toPlayers are set.
-	 * 
+	 *
 	 * WARNING: The title method needs to have the following as a configuration, this is special.
 	 * title:
 	 * 	  enabled: false
@@ -326,15 +326,15 @@ public class MessageBuilder {
 		int stay = section.getInt(nodes[0] + ".stay", 200);
 		if (senders != null && senders.size() > 0) {
 			senders.parallelStream()
-			.filter(sender -> sender instanceof ProxiedPlayer)
-			.map(sender -> (ProxiedPlayer) sender)
-			.forEach(player -> ProxyServer.getInstance().createTitle()
-					.subTitle(new TextComponent(subtitle))
-					.title(new TextComponent(title))
-					.fadeOut(fadeOut)
-					.fadeIn(fadeIn)
-					.stay(stay)
-					.send(player));
+					.filter(sender -> sender instanceof ProxiedPlayer)
+					.map(sender -> (ProxiedPlayer) sender)
+					.forEach(player -> ProxyServer.getInstance().createTitle()
+							.subTitle(new TextComponent(subtitle))
+							.title(new TextComponent(title))
+							.fadeOut(fadeOut)
+							.fadeIn(fadeIn)
+							.stay(stay)
+							.send(player));
 		}
 	}
 
@@ -343,7 +343,7 @@ public class MessageBuilder {
 	 */
 	public void sendActionbar() {
 		get();
-		complete = new TextComponent(complete.toString().replaceAll("\n", ""));
+		complete = new TextComponent(complete.getText().replaceAll("\n", ""));
 		if (senders != null && senders.size() > 0) {
 			for (CommandSender sender : senders) {
 				if (sender instanceof ProxiedPlayer)
@@ -358,8 +358,7 @@ public class MessageBuilder {
 	 * @return The MessageBuilder for chaining.
 	 */
 	public MessageBuilder setHoverEvent(HoverEvent hoverEvent) {
-		get();
-		complete.setHoverEvent(hoverEvent);
+		this.hoverEvent = hoverEvent;
 		return this;
 	}
 
@@ -368,8 +367,7 @@ public class MessageBuilder {
 	 * @return The MessageBuilder for chaining.
 	 */
 	public MessageBuilder setClickEvent(ClickEvent clickEvent) {
-		get();
-		complete.setClickEvent(clickEvent);
+		this.clickEvent = clickEvent;
 		return this;
 	}
 
@@ -378,15 +376,17 @@ public class MessageBuilder {
 	 */
 	public void send() {
 		get();
+		if (clickEvent != null) complete.setClickEvent(clickEvent);
+		if (hoverEvent != null) complete.setHoverEvent(hoverEvent);
 		if (!senders.isEmpty()) {
 			for (CommandSender sender : senders)
-				sender.sendMessage(new TextComponent(complete));
+				sender.sendMessage(complete);
 		}
 	}
 
 	@Override
 	public String toString() {
-		return get().toString();
+		return get().getText();
 	}
 
 }
