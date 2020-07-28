@@ -354,18 +354,23 @@ public class MessageBuilder {
 
 	/**
 	 * Adds a click event for the message
+	 * @param hoverEvent The hover event.
+	 * @return The MessageBuilder for chaining.
 	 */
-	public void setHoverEvent(HoverEvent hoverEvent) {
+	public MessageBuilder setHoverEvent(HoverEvent hoverEvent) {
 		get();
 		complete.setHoverEvent(hoverEvent);
+		return this;
 	}
 
 	/**
-	 * Adds a click event for the message
+	 * @param clickEvent The click event.
+	 * @return The MessageBuilder for chaining.
 	 */
-	public void setClickEvent(ClickEvent clickEvent) {
+	public MessageBuilder setClickEvent(ClickEvent clickEvent) {
 		get();
 		complete.setClickEvent(clickEvent);
+		return this;
 	}
 
 	/**
