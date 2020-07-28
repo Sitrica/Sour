@@ -1,12 +1,7 @@
 package com.sitrica.bungeecord.core.messaging;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -20,6 +15,9 @@ import com.sitrica.bungeecord.core.placeholders.SimplePlaceholder;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
@@ -31,7 +29,7 @@ public class MessageBuilder {
 	private final SourPlugin instance;
 	private Object defaultPlaceholderObject;
 	private Configuration section;
-	private String complete;
+	private TextComponent complete;
 	private String[] nodes;
 	private boolean prefix;
 
@@ -93,7 +91,7 @@ public class MessageBuilder {
 	/**
 	 * Set the players to send this message to.
 	 *
-	 * @param senders The ProxiedPlayer... to send the message to.
+	 * @param players The ProxiedPlayer... to send the message to.
 	 * @return The MessageBuilder for chaining.
 	 */
 	public MessageBuilder toPlayers(ProxiedPlayer... players) {
@@ -104,7 +102,7 @@ public class MessageBuilder {
 	/**
 	 * Set the players to send this message to.
 	 *
-	 * @param senders The Collection<ProxiedPlayer> to send the message to.
+	 * @param players The Collection<ProxiedPlayer> to send the message to.
 	 * @return The MessageBuilder for chaining.
 	 */
 	public MessageBuilder toPlayers(Collection<? extends ProxiedPlayer> players) {
@@ -127,7 +125,7 @@ public class MessageBuilder {
 	/**
 	 * Set the configuration to read from, by default is the messages.yml
 	 * 
-	 * @param configuration The FileConfiguration to read from.
+	 * @param section The FileConfiguration to read from.
 	 * @return The MessageBuilder for chaining.
 	 */
 	public MessageBuilder fromConfiguration(Configuration section) {
@@ -139,7 +137,7 @@ public class MessageBuilder {
 	 * Created a list replacement and ignores the placeholder object.
 	 * 
 	 * @param syntax The syntax to check within the messages e.g: %command%
-	 * @param replacement The replacement e.g: the command.
+	 * @param collection The replacement e.g: the command.
 	 * @return The MessageBuilder for chaining.
 	 */
 	public <T> MessageBuilder replace(String syntax, Collection<T> collection, Function<T, String> mapper) {
@@ -238,8 +236,9 @@ public class MessageBuilder {
 
 	/**
 	 * Completes and returns the final product of the builder.
+	 * @return
 	 */
-	public String get() {
+	public TextComponent get() {
 		if (section == null) {
 			try {
 				section = instance.getConfiguration("messages")
@@ -251,10 +250,10 @@ public class MessageBuilder {
 			}
 		}
 		if (prefix)
-			complete = Formatting.messagesPrefixed(instance, section, nodes);
+			complete = new TextComponent(Formatting.messagesPrefixed(instance, section, nodes).trim());
 		else
-			complete = Formatting.messages(section, nodes);
-		complete = applyPlaceholders(complete);
+			complete = new TextComponent(Formatting.messages(section, nodes).trim());
+		complete = new TextComponent(applyPlaceholders(complete.toString()).trim());
 		return complete;
 	}
 
@@ -330,8 +329,8 @@ public class MessageBuilder {
 			.filter(sender -> sender instanceof ProxiedPlayer)
 			.map(sender -> (ProxiedPlayer) sender)
 			.forEach(player -> ProxyServer.getInstance().createTitle()
-					.subTitle(TextComponent.fromLegacyText(subtitle))
-					.title(TextComponent.fromLegacyText(title))
+					.subTitle(new TextComponent(subtitle))
+					.title(new TextComponent(title))
 					.fadeOut(fadeOut)
 					.fadeIn(fadeIn)
 					.stay(stay)
@@ -344,13 +343,29 @@ public class MessageBuilder {
 	 */
 	public void sendActionbar() {
 		get();
-		complete = complete.replaceAll("\n", "");
+		complete = new TextComponent(complete.toString().replaceAll("\n", ""));
 		if (senders != null && senders.size() > 0) {
 			for (CommandSender sender : senders) {
 				if (sender instanceof ProxiedPlayer)
-					((ProxiedPlayer)sender).sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(complete));
+					((ProxiedPlayer)sender).sendMessage(ChatMessageType.ACTION_BAR, complete);
 			}
 		}
+	}
+
+	/**
+	 * Adds a click event for the message
+	 */
+	public void setHoverEvent(HoverEvent hoverEvent) {
+		get();
+		complete.setHoverEvent(hoverEvent);
+	}
+
+	/**
+	 * Adds a click event for the message
+	 */
+	public void setClickEvent(ClickEvent clickEvent) {
+		get();
+		complete.setClickEvent(clickEvent);
 	}
 
 	/**
@@ -360,13 +375,13 @@ public class MessageBuilder {
 		get();
 		if (!senders.isEmpty()) {
 			for (CommandSender sender : senders)
-				sender.sendMessage(TextComponent.fromLegacyText(complete));
+				sender.sendMessage(new TextComponent(complete));
 		}
 	}
 
 	@Override
 	public String toString() {
-		return get();
+		return get().toString();
 	}
 
 }
