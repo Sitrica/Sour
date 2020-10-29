@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 public class MessageBuilder {
 
-	private Map<Placeholder<?>, Object> placeholders = new TreeMap<>(Comparator.comparing(Placeholder::getPriority));
+	private final Map<Placeholder<?>, Object> placeholders = new TreeMap<>(Comparator.comparing(Placeholder::getPriority));
 	private final List<CommandSender> senders = new ArrayList<>();
 	private final SourPlugin instance;
 	private Object defaultPlaceholderObject;
@@ -31,7 +31,7 @@ public class MessageBuilder {
 	private Configuration section;
 	private TextComponent complete;
 	private String[] nodes;
-	private boolean prefix;
+	private final boolean prefix;
 
 	/**
 	 * Creates a MessageBuilder with the defined nodes..
@@ -236,7 +236,7 @@ public class MessageBuilder {
 
 	/**
 	 * Completes and returns the final product of the builder.
-	 * @return
+	 * @return TextComponent
 	 */
 	public TextComponent get() {
 		if (section == null) {
@@ -353,7 +353,7 @@ public class MessageBuilder {
 	}
 
 	/**
-	 * Adds a click event for the message
+	 * Adds a hover event to the message
 	 * @param hoverEvent The hover event.
 	 * @return The MessageBuilder for chaining.
 	 */
@@ -363,7 +363,8 @@ public class MessageBuilder {
 	}
 
 	/**
-	 * @param clickEvent The click event.
+	 * Adds a click event to the message
+	 * @param clickEvent The hover event.
 	 * @return The MessageBuilder for chaining.
 	 */
 	public MessageBuilder setClickEvent(ClickEvent clickEvent) {
