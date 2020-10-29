@@ -45,7 +45,7 @@ publishing {
 		gpr(MavenPublication) {
 			version = project.property("version")
 			groupId = 'com.sitrica'
-			artifactId = project.name
+			artifactId = project.name.toLowerCase()
 			from(components.java)
 		}
 	}
