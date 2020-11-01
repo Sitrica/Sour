@@ -4,7 +4,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -28,6 +27,8 @@ public abstract class Database<T> {
 				.serializeNulls()
 				.create();
 	}
+
+	public abstract void close();
 
 	public abstract void put(String key, T value);
 
