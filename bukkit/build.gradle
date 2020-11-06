@@ -1,0 +1,48 @@
+apply plugin: 'maven-publish'
+apply plugin: 'java-library'
+apply plugin: 'eclipse'
+
+jar.archiveName = project.name + '.jar'
+
+repositories {
+	mavenCentral()
+
+	// Spigot
+	maven {
+		url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+	}
+
+	// Bungeecord
+	maven {
+		url "https://oss.sonatype.org/content/repositories/snapshots/"
+	}
+
+}
+
+dependencies {
+
+	// Spigot
+	implementation (group: 'org.spigotmc', name: 'spigot-api', version: '1.16.3-R0.1-SNAPSHOT')
+
+}
+
+publishing {
+	repositories {
+		maven {
+			name = "SourCore"
+			url = uri("https://maven.pkg.github.com/Sitrica/SourCore")
+			credentials {
+				username = 'Sitrica'
+				password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_PACKAGES_KEY")
+			}
+		}
+	}
+	publications {
+		gpr(MavenPublication) {
+			version = project.property("version")
+			groupId = 'com.sitrica'
+			artifactId = 'core' // Don't modify
+			from(components.java)
+		}
+	}
+}
