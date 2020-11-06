@@ -1,8 +1,12 @@
-apply plugin: 'maven-publish'
-apply plugin: 'java-library'
-apply plugin: 'eclipse'
+plugins {
+	id 'eclipse'
+	id 'java-library'
+	id 'maven-publish'
+	id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
 
-jar.archiveName = project.name + '.jar'
+jar.archiveName = "SourCore-Bukkit.jar"
+project.version = "1.1.0"
 
 repositories {
 	mavenCentral()
@@ -12,25 +16,31 @@ repositories {
 		url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
 	}
 
-	// Bungeecord
-	maven {
-		url "https://oss.sonatype.org/content/repositories/snapshots/"
-	}
-
 }
 
 dependencies {
+	compile project(':common')
 
 	// Spigot
-	implementation (group: 'org.spigotmc', name: 'spigot-api', version: '1.16.3-R0.1-SNAPSHOT')
+	compileOnly (group: 'org.spigotmc', name: 'spigot-api', version: '1.16.4-R0.1-SNAPSHOT')
+}
 
+shadowJar {
+	classifier = ''
+	archiveFileName.set("SourCore-Bukkit.jar")
+
+	minimize {
+		exclude(project(':common'))
+	}
+
+	relocate 'com.sitrica.core.common', 'com.sitrica.core.bukkit'
 }
 
 publishing {
 	repositories {
 		maven {
 			name = "SourCore"
-			url = uri("https://maven.pkg.github.com/Sitrica/SourCore")
+			url = uri("https://maven.pkg.github.com/Sitrica/Sour")
 			credentials {
 				username = 'Sitrica'
 				password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_PACKAGES_KEY")
@@ -38,11 +48,10 @@ publishing {
 		}
 	}
 	publications {
-		gpr(MavenPublication) {
-			version = project.property("version")
-			groupId = 'com.sitrica'
-			artifactId = 'core' // Don't modify
-			from(components.java)
+		shadow(MavenPublication) {publication ->
+			project.shadow.component(publication)
+			groupId = 'com.sitrica.core'
+			artifactId = 'bukkit'
 		}
 	}
 }

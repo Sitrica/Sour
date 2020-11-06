@@ -1,0 +1,6 @@
+rootProject.name = 'Sour'
+include (
+        'common',
+        'bukkit',
+        'bungee',
+)

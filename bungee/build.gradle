@@ -1,13 +1,12 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 plugins {
-	id 'com.github.johnrengelman.shadow' version '5.2.0'
 	id 'eclipse'
 	id 'java-library'
 	id 'maven-publish'
+	id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
-jar.archiveName = project.name + '.jar'
+jar.archiveName = "SourCore-Bungee.jar"
+project.version = "1.1.0"
 
 repositories {
 	mavenCentral()
@@ -20,21 +19,29 @@ repositories {
 }
 
 dependencies {
+	compile project(':common')
 
 	// Bungeecord
-	implementation (group: 'net.md-5', name: 'bungeecord-protocol', version: '1.16-R0.4-SNAPSHOT')
-	implementation (group: 'net.md-5', name: 'bungeecord-api', version: '1.16-R0.4-SNAPSHOT')
+	compileOnly (group: 'net.md-5', name: 'bungeecord-protocol', version: '1.16-R0.4-SNAPSHOT')
+	compileOnly (group: 'net.md-5', name: 'bungeecord-api', version: '1.16-R0.4-SNAPSHOT')
+}
 
-	shadow (group: 'com.google.code.gson', name: 'gson', version: '2.8.6')
+shadowJar {
+	classifier = ''
+	archiveFileName.set("SourCore-Bungee.jar")
 
-//	shadow fileTree(dir: 'libraries', include: '*.jar')
+	minimize {
+		exclude(project(':common'))
+	}
+
+	relocate 'com.sitrica.core.common', 'com.sitrica.core.bungee'
 }
 
 publishing {
 	repositories {
 		maven {
-			name = project.name
-			url = uri("https://maven.pkg.github.com/Sitrica/" + project.name)
+			name = "SourCore"
+			url = uri("https://maven.pkg.github.com/Sitrica/Sour")
 			credentials {
 				username = 'Sitrica'
 				password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_PACKAGES_KEY")
@@ -42,26 +49,10 @@ publishing {
 		}
 	}
 	publications {
-		gpr(MavenPublication) {
-			version = project.property("version")
-			groupId = 'com.sitrica'
-			artifactId = project.name.toLowerCase()
-			from(components.java)
+		shadow(MavenPublication) {publication ->
+			project.shadow.component(publication)
+			groupId = 'com.sitrica.core'
+			artifactId = 'bungee'
 		}
 	}
-}
-
-processResources {
-	from (sourceSets.main.resources.srcDirs) {
-		filter ReplaceTokens, tokens: ["version": project.property("version")]
-		include '**/*.yml'
-	}
-}
-
-shadowJar {
-	configurations = [project.configurations.shadow]
-	archiveVersion = ''
-	baseName = project.name
-	classifier = ''
-	minimize()
 }
