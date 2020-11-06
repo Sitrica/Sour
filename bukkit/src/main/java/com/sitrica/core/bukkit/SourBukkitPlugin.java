@@ -1,5 +1,7 @@
 package com.sitrica.core.bukkit;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.Optional;
 
 import com.sitrica.core.common.SourPlugin;
@@ -71,4 +73,14 @@ public abstract class SourBukkitPlugin extends JavaPlugin implements SourPlugin 
 		return prefix;
 	}
 
+
+	@Override
+	public Path getDataDirectory() {
+		return getDataFolder().toPath().toAbsolutePath();
+	}
+
+	@Override
+	public File getJar() {
+		return getFile();
+	}
 }

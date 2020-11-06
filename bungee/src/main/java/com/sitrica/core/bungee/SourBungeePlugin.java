@@ -59,7 +59,6 @@ public abstract class SourBungeePlugin extends Plugin implements SourPlugin {
 	 */
 	public abstract <T extends Manager> T getManager(Class<T> expected);
 
-	@Override
 	public Optional<Configuration> getConfig() {
 		return getConfiguration("config");
 	}

@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sitrica.core.bukkit.SourBukkitPlugin;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -20,18 +20,18 @@ public class Formatting {
 	}
 
 	public static String messages(ConfigurationSection section, String... nodes) {
-		String complete = "";
+		StringBuilder complete = new StringBuilder();
 		List<String> list = Arrays.asList(nodes);
 		Collections.reverse(list);
 		int i = 0;
 		for (String node : list) {
 			if (i == 0)
-				complete = section.getString(node, "Error " + section.getCurrentPath() + "." + node) + complete;
+				complete.insert(0, section.getString(node, "Error " + section.getCurrentPath() + "." + node));
 			else
-				complete = section.getString(node, "Error " + section.getCurrentPath() + "." + node) + " " + complete;
+				complete.insert(0, section.getString(node, "Error " + section.getCurrentPath() + "." + node) + " ");
 			i++;
 		}
-		return Formatting.color(complete);
+		return Formatting.color(complete.toString());
 	}
 
 	public static String colorHex(String input) {
@@ -40,7 +40,7 @@ public class Formatting {
 		Matcher matcher = Pattern.compile("&#([A-Fa-f0-9]{6})").matcher(input);
 
 		while(matcher.find()) {
-			input = input.replace(matcher.group(), net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
+			input = input.replace(matcher.group(), ChatColor.of(matcher.group().replace("&", "")).toString());
 		}
 
 		return input;

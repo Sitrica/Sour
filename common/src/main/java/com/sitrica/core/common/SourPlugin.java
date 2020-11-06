@@ -14,6 +14,4 @@ public interface SourPlugin {
     void consoleMessage(String s);
 
     String getName();
-
-    <T> T getConfig();
 }
