@@ -1,6 +1,6 @@
 package com.sitrica.core.bukkit.messaging;
 
-import com.sitrica.core.bukkit.utils.Fallback;
+import com.sitrica.core.common.messaging.Formatting;
 import com.sitrica.core.common.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;

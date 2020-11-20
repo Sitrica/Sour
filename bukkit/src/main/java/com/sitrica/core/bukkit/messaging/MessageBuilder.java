@@ -1,28 +1,24 @@
 package com.sitrica.core.bukkit.messaging;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-
+import com.google.common.collect.Sets;
 import com.sitrica.core.bukkit.SourBukkitPlugin;
+import com.sitrica.core.common.messaging.Formatting;
 import com.sitrica.core.common.objects.StringList;
+import com.sitrica.core.common.placeholders.Placeholder;
+import com.sitrica.core.common.placeholders.Placeholders;
 import com.sitrica.core.common.placeholders.SimplePlaceholder;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import com.google.common.collect.Sets;
-import com.sitrica.core.common.placeholders.Placeholder;
-import com.sitrica.core.common.placeholders.Placeholders;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 
 public class MessageBuilder {
 
@@ -246,11 +242,32 @@ public class MessageBuilder {
 		if (section == null)
 			section = instance.getConfiguration("messages").orElse(instance.getConfig());
 		if (prefix)
-			complete = new TextComponent(Formatting.messagesPrefixed(instance, section, nodes).trim());
+			complete = new TextComponent(messagesPrefixed(instance, section, nodes).trim());
 		else
-			complete = new TextComponent(Formatting.messages(section, nodes).trim());
+			complete = new TextComponent(messages(section, nodes).trim());
 		complete = new TextComponent(applyPlaceholders(complete.getText()).trim());
 		return complete;
+	}
+
+	private String messagesPrefixed(SourBukkitPlugin instance, ConfigurationSection section, String... nodes) {
+		FileConfiguration messages = instance.getConfiguration("messages").orElse(instance.getConfig());
+		String complete = messages.getString("messages.prefix", instance.getPrefix());
+		return Formatting.color(complete + messages(section, Arrays.copyOfRange(nodes, 0, nodes.length)));
+	}
+
+	private String messages(ConfigurationSection section, String... nodes) {
+		StringBuilder complete = new StringBuilder();
+		List<String> list = Arrays.asList(nodes);
+		Collections.reverse(list);
+		int i = 0;
+		for (String node : list) {
+			if (i == 0)
+				complete.insert(0, section.getString(node, "Error " + section.getCurrentPath() + "." + node));
+			else
+				complete.insert(0, section.getString(node, "Error " + section.getCurrentPath() + "." + node) + " ");
+			i++;
+		}
+		return Formatting.color(complete.toString());
 	}
 
 	private String applyPlaceholders(String input) {

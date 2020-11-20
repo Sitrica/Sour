@@ -1,19 +1,19 @@
 package com.sitrica.core.bungee;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.util.Optional;
-
-import com.sitrica.core.common.SourPlugin;
 import com.sitrica.core.bungee.manager.Manager;
-import com.sitrica.core.bungee.messaging.Formatting;
+import com.sitrica.core.common.SourPlugin;
+import com.sitrica.core.common.messaging.Formatting;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Optional;
+
 public abstract class SourBungeePlugin extends Plugin implements SourPlugin {
 
-	private final String prefix, name;
+	private final String prefix;
 	private String[] managerPackages;
 
 	/**
@@ -21,12 +21,11 @@ public abstract class SourBungeePlugin extends Plugin implements SourPlugin {
 	 * @param prefix Define the default prefix of the plugin.
 	 * @param managerPackages packages containing the managers.
 	 */
-	public SourBungeePlugin(String name, String packageName, String prefix, String... managerPackages) {
+	public SourBungeePlugin(String packageName, String prefix, String... managerPackages) {
 		this.managerPackages = managerPackages;
-		if (managerPackages == null)
+		if (managerPackages.length == 0)
 			this.managerPackages = new String[] {packageName + ".managers"};
 		this.prefix = prefix;
-		this.name = name;
 	}
 
 	/**
@@ -44,7 +43,7 @@ public abstract class SourBungeePlugin extends Plugin implements SourPlugin {
 
 	@Override
 	public void debugMessage(String string) {
-		getConfiguration("config").ifPresent(configuration -> {
+		getConfig().ifPresent(configuration -> {
 			if (configuration.getBoolean("debug", false))
 				consoleMessage("&b" + string);
 		});
@@ -79,7 +78,7 @@ public abstract class SourBungeePlugin extends Plugin implements SourPlugin {
 
 	@Override
 	public String getName() {
-		return name;
+		return getDescription().getName();
 	}
 
 	@Override

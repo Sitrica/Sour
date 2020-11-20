@@ -1,4 +1,4 @@
-package com.sitrica.core.bukkit.database.serializers;
+package com.sitrica.core.common.database.serializers;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;

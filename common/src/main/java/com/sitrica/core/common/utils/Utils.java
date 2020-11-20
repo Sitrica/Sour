@@ -1,11 +1,7 @@
 package com.sitrica.core.common.utils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -31,6 +27,10 @@ public class Utils {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public static boolean isBukkit() {
+		return classExists("org.bukkit.Bukkit");
 	}
 
 	public static boolean checkForMatch(List<String> matchers, String input) {
@@ -83,7 +83,7 @@ public class Utils {
 	public static <T> List<Class<T>> getClassesOf(SourPlugin instance, Class<T> type, String... basePackages) {
 		return Arrays.stream(basePackages)
 				.map(basePackage -> getClassesOf(instance, basePackage, type))
-				.flatMap(list -> list.stream())
+				.flatMap(classes -> classes != null ? classes.stream() : null)
 				.collect(Collectors.toList());
 	}
 

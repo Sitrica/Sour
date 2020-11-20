@@ -6,7 +6,7 @@ plugins {
 }
 
 jar.archiveName = "SourCore-Bukkit.jar"
-project.version = "1.1.1"
+project.version = "1.1.2"
 
 repositories {
 	mavenCentral()

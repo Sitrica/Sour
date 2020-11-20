@@ -24,7 +24,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.sitrica.core.bukkit.messaging.Formatting;
+import com.sitrica.core.common.messaging.Formatting;
 import com.sitrica.core.common.objects.StringList;
 import com.sitrica.core.common.placeholders.Placeholder;
 import com.sitrica.core.common.placeholders.Placeholders;

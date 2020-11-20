@@ -4,7 +4,7 @@ import com.sitrica.core.bukkit.SourBukkitPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.sitrica.core.bukkit.messaging.Formatting;
+import com.sitrica.core.common.messaging.Formatting;
 
 public abstract class AbstractCommand {
 

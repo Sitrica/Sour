@@ -6,11 +6,9 @@ plugins {
 }
 
 jar.archiveName = "SourCore-Bungee.jar"
-project.version = "1.1.1"
+project.version = "1.1.2"
 
 repositories {
-	mavenCentral()
-
 	// Bungeecord
 	maven {
 		url "https://oss.sonatype.org/content/repositories/snapshots/"

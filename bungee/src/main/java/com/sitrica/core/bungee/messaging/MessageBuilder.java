@@ -2,10 +2,11 @@ package com.sitrica.core.bungee.messaging;
 
 import com.google.common.collect.Sets;
 import com.sitrica.core.bungee.SourBungeePlugin;
+import com.sitrica.core.common.messaging.Formatting;
+import com.sitrica.core.common.objects.StringList;
 import com.sitrica.core.common.placeholders.Placeholder;
 import com.sitrica.core.common.placeholders.Placeholders;
 import com.sitrica.core.common.placeholders.SimplePlaceholder;
-import com.sitrica.core.common.objects.StringList;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -250,11 +251,40 @@ public class MessageBuilder {
 			}
 		}
 		if (prefix)
-			complete = new TextComponent(Formatting.messagesPrefixed(instance, section, nodes).trim());
+			complete = new TextComponent(messagesPrefixed(instance, section, nodes).trim());
 		else
-			complete = new TextComponent(Formatting.messages(section, nodes).trim());
+			complete = new TextComponent(messages(section, nodes).trim());
 		complete = new TextComponent(applyPlaceholders(complete.getText()).trim());
 		return complete;
+	}
+
+	private String messagesPrefixed(SourBungeePlugin instance, Configuration section, String... nodes) {
+		Configuration messages;
+		try {
+			messages = instance.getConfiguration("messages")
+					.orElse(instance.getConfig()
+							.orElseThrow(() -> new IllegalAccessException("Plugin did not have a messages.yml")));
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			return "";
+		}
+		String complete = messages.getString("messages.prefix", instance.getPrefix());
+		return Formatting.color(complete + messages(section, Arrays.copyOfRange(nodes, 0, nodes.length)));
+	}
+
+	private String messages(Configuration section, String... nodes) {
+		String complete = "";
+		List<String> list = Arrays.asList(nodes);
+		Collections.reverse(list);
+		int i = 0;
+		for (String node : list) {
+			if (i == 0)
+				complete = section.getString(node, "Error " + section + "." + node) + complete;
+			else
+				complete = section.getString(node, "Error " + section + "." + node) + " " + complete;
+			i++;
+		}
+		return Formatting.color(complete);
 	}
 
 	private String applyPlaceholders(String input) {

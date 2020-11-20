@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.sitrica.core.common.messaging.Formatting;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

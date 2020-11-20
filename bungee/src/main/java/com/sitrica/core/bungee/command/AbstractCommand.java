@@ -1,8 +1,7 @@
 package com.sitrica.core.bungee.command;
 
 import com.sitrica.core.bungee.SourBungeePlugin;
-import com.sitrica.core.bungee.messaging.Formatting;
-
+import com.sitrica.core.common.messaging.Formatting;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.config.Configuration;
 

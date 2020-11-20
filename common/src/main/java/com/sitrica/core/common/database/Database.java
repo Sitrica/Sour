@@ -6,6 +6,11 @@ import java.util.Map;
 import java.util.Set;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sitrica.core.common.database.serializers.ItemStackSerializer;
+import com.sitrica.core.common.database.serializers.LocationSerializer;
+import com.sitrica.core.common.utils.Utils;
+import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 
 public abstract class Database<T> {
 
@@ -16,16 +21,28 @@ public abstract class Database<T> {
 				.excludeFieldsWithModifiers(Modifier.TRANSIENT, Modifier.STATIC)
 				.enableComplexMapKeySerialization()
 				.serializeNulls();
+
+		if (Utils.isBukkit()) {
+			builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer())
+					.registerTypeAdapter(Location.class, new LocationSerializer());
+		}
+
 		serializers.forEach(builder::registerTypeAdapter);
 		gson = builder.create();
 	}
 
 	public Database() {
-		gson = new GsonBuilder()
+		GsonBuilder builder = new GsonBuilder()
 				.excludeFieldsWithModifiers(Modifier.TRANSIENT, Modifier.STATIC)
 				.enableComplexMapKeySerialization()
-				.serializeNulls()
-				.create();
+				.serializeNulls();
+
+		if (Utils.isBukkit()) {
+			builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer())
+					.registerTypeAdapter(Location.class, new LocationSerializer());
+		}
+
+		gson = builder.create();
 	}
 
 	public abstract void close();

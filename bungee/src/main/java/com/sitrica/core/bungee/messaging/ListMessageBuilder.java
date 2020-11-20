@@ -1,25 +1,21 @@
 package com.sitrica.core.bungee.messaging;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Pattern;
-
 import com.google.common.collect.Sets;
 import com.sitrica.core.bungee.SourBungeePlugin;
+import com.sitrica.core.common.messaging.Formatting;
 import com.sitrica.core.common.placeholders.Placeholder;
 import com.sitrica.core.common.placeholders.Placeholders;
 import com.sitrica.core.common.placeholders.SimplePlaceholder;
-
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 public class ListMessageBuilder {
 

@@ -1,4 +1,4 @@
-package com.sitrica.core.bukkit.database;
+package com.sitrica.core.common.database;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -58,11 +58,8 @@ public class Utf8YamlConfiguration extends YamlConfiguration {
 		file.mkdirs();
 		String data = saveToString();
 		FileOutputStream stream = new FileOutputStream(file);
-		OutputStreamWriter writer = new OutputStreamWriter(stream, UTF8_CHARSET);
-		try {
+		try (OutputStreamWriter writer = new OutputStreamWriter(stream, UTF8_CHARSET)) {
 			writer.write(data);
-		} finally {
-			writer.close();
 		}
 	}
 

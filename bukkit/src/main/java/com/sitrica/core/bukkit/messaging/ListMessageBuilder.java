@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import com.sitrica.core.bukkit.SourBukkitPlugin;
+import com.sitrica.core.common.messaging.Formatting;
 import com.sitrica.core.common.placeholders.SimplePlaceholder;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;

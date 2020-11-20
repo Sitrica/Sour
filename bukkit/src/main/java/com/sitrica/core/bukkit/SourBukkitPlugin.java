@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.sitrica.core.bukkit.command.CommandHandler;
 import com.sitrica.core.bukkit.manager.Manager;
-import com.sitrica.core.bukkit.messaging.Formatting;
+import com.sitrica.core.common.messaging.Formatting;
 
 public abstract class SourBukkitPlugin extends JavaPlugin implements SourPlugin {
 

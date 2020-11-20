@@ -1,4 +1,4 @@
-package com.sitrica.core.bukkit.database.serializers;
+package com.sitrica.core.common.database.serializers;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
@@ -6,8 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.sitrica.core.common.database.Serializer;
-import com.sitrica.core.bukkit.database.Utf8YamlConfiguration;
 
+import com.sitrica.core.common.database.Utf8YamlConfiguration;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -22,7 +22,7 @@ public class ItemStackSerializer implements Serializer<ItemStack> {
 		JsonObject object = new JsonObject();
 		String serialized = null;
 		try {
-			FileConfiguration fc = new com.sitrica.core.bukkit.database.Utf8YamlConfiguration();
+			FileConfiguration fc = new Utf8YamlConfiguration();
 			fc.set("ItemStack", item);
 			serialized = fc.saveToString();
 		} finally {

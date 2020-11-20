@@ -1,15 +1,14 @@
 package com.sitrica.core.bukkit.manager;
 
+import com.sitrica.core.bukkit.SourBukkitPlugin;
+import com.sitrica.core.common.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.IllegalPluginAccessException;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.sitrica.core.bukkit.SourBukkitPlugin;
-import com.sitrica.core.bukkit.utils.Fallback;
-import com.sitrica.core.common.utils.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.IllegalPluginAccessException;
 
 public class ManagerHandler {
 
