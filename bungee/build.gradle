@@ -21,7 +21,7 @@ dependencies {
 
 	// Bungeecord
 	compileOnly (group: 'net.md-5', name: 'bungeecord-protocol', version: '1.16-R0.4-SNAPSHOT')
-	compileOnly (group: 'net.md-5', name: 'bungeecord-api', version: '1.16-R0.4-SNAPSHOT')
+	compileOnly (group: 'net.md-5', name: 'bungeecord-api', version: '1.17-R0.1-SNAPSHOT')
 }
 
 shadowJar {
