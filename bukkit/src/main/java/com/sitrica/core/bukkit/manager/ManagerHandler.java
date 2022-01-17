@@ -1,6 +1,7 @@
 package com.sitrica.core.bukkit.manager;
 
 import com.sitrica.core.bukkit.SourBukkitPlugin;
+import com.sitrica.core.bungee.manager.Manager;
 import com.sitrica.core.common.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.IllegalPluginAccessException;
@@ -26,7 +27,6 @@ public class ManagerHandler {
 				} catch (InstantiationException | IllegalAccessException e) {
 					instance.consoleMessage("&dManager " + clazz.getName() + " doesn't have a nullable constructor.");
 					e.printStackTrace();
-					continue;
 				}
 			}
 		}

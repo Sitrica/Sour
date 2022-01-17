@@ -2,7 +2,6 @@ defaultTasks 'shadowJar'
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'maven'
 
     group = 'com.sitrica.sour'
     version = '1.0'
@@ -11,6 +10,8 @@ subprojects {
     targetCompatibility = 1.8
 
     tasks.withType(JavaCompile) {
+//        options.compilerArgs << '-Xlint:unchecked'
+//        options.deprecation = true
         options.encoding = 'UTF-8'
     }
 

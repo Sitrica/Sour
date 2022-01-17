@@ -1,7 +1,12 @@
 package com.sitrica.core.common;
 
+import com.sitrica.core.common.messaging.Formatting;
+import net.kyori.adventure.audience.Audience;
+import org.spongepowered.configurate.ConfigurationNode;
+
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public interface SourPlugin {
 
@@ -9,9 +14,26 @@ public interface SourPlugin {
 
     File getJar();
 
-    void debugMessage(String s);
+    default void debugMessage(String message) {
+        getConfiguration().ifPresent(configuration -> {
+            if (configuration.node("debug", false).getBoolean())
+                consoleMessage("&b" + message);
+        });
+    }
 
-    void consoleMessage(String s);
+    default void consoleMessage(String message) {
+        getAdventureConsole().sendMessage(Formatting.color(message));
+    }
 
     String getName();
+
+    String getPrefix();
+
+    Optional<ConfigurationNode> getConfiguration(String config);
+
+    Audience getAdventureConsole();
+
+    default Optional<ConfigurationNode> getConfiguration() {
+        return getConfiguration("config");
+    }
 }

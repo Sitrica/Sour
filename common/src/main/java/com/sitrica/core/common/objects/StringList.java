@@ -13,7 +13,7 @@ public class StringList {
 	}
 
 	public StringList(Collection<String> collection) {
-		this.strings = collection.toArray(new String[collection.size()]);
+		this.strings = collection.toArray(new String[0]);
 	}
 
 	public <T> StringList(Collection<T> collection, Function<T, String> mapper) {
@@ -22,7 +22,7 @@ public class StringList {
 
 	public String merge() {
 		for (String string : strings)
-			builder.append(string + " ");
+			builder.append(string).append(" ");
 		return builder.toString();
 	}
 
@@ -33,9 +33,9 @@ public class StringList {
 			if (i >= strings.length)
 				builder.append(string);
 			else if (i == strings.length - 1)
-				builder.append(string + ", and ");
+				builder.append(string).append(", and ");
 			else
-				builder.append(string + ", ");
+				builder.append(string).append(", ");
 			i++;
 		}
 		return builder.toString();

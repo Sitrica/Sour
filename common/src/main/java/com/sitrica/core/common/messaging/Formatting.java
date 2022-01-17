@@ -1,37 +1,24 @@
 package com.sitrica.core.common.messaging;
 
-import net.md_5.bungee.api.ChatColor;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class Formatting {
 
-	public static String colorHex(String input) {
-		if (input == null) return "";
-
-		Matcher matcher = Pattern.compile("&#([A-Fa-f0-9]{6})").matcher(input);
-
-		while(matcher.find()) {
-			input = input.replace(matcher.group(), ChatColor.of(matcher.group().replace("&", "")).toString());
-		}
-
-		return input;
+	public static TextComponent color(String input) {
+		if (input == null) return Component.empty();
+		return LegacyComponentSerializer.legacyAmpersand().deserialize(input);
 	}
 
-	public static String color(String input) {
-		if (input == null) return "";
-		return colorHex(ChatColor.translateAlternateColorCodes('&', input));
+	public static TextComponent colorAndStrip(String input) {
+		if (input == null) return Component.empty();
+		return Component.text(stripColor(color(input)));
 	}
 
-	public static String colorAndStrip(String input) {
+	public static String stripColor(Component input) {
 		if (input == null) return "";
-		return stripColor(color(input));
+		return PlainTextComponentSerializer.plainText().serialize(input);
 	}
-
-	public static String stripColor(String input) {
-		if (input == null) return "";
-		return ChatColor.stripColor(input);
-	}
-
 }

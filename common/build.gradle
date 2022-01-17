@@ -1,4 +1,8 @@
-jar.archiveName = "SourCore-Common.jar"
+plugins {
+	id 'eclipse'
+	id 'java-library'
+	id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
 
 repositories {
 	// Spigot
@@ -9,7 +13,24 @@ repositories {
 }
 
 dependencies {
+	// Gson + Guava (Provided by platform version)
 	compileOnly (group: 'com.google.code.gson', name: 'gson', version: '2.8.6')
 	compileOnly (group: 'com.google.guava', name: 'guava', version: '19.0')
 	compileOnly (group: 'org.spigotmc', name: 'spigot-api', version: '1.16.4-R0.1-SNAPSHOT')
+
+	// Adventure + Serializers (Provided by platform specific version)
+	compileOnly (group: 'net.kyori', name: 'adventure-api', version: '4.9.3')
+	compileOnly (group: 'net.kyori', name: 'adventure-text-serializer-legacy', version: '4.9.3')
+	compileOnly (group: 'net.kyori', name: 'adventure-text-serializer-plain', version: '4.9.3')
+
+	// Configurate (Provided by loader specific version)
+	compileOnly (group: 'org.spongepowered', name: 'configurate-core', version: '4.1.2')
+}
+
+shadowJar {
+	archivesBaseName = "SourCore-Common"
+	archiveVersion.set("")
+	archiveClassifier.set("")
+
+	minimize()
 }

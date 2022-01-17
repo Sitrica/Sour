@@ -1,19 +1,14 @@
 package com.sitrica.core.bukkit.sounds;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.sitrica.core.bukkit.SourBukkitPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SoundPlayer {
 
@@ -22,25 +17,34 @@ public class SoundPlayer {
 
 	public SoundPlayer(SourBukkitPlugin instance, String node) {
 		this.instance = instance;
-		Optional<FileConfiguration> configuration = instance.getConfiguration("sounds");
+		Optional<ConfigurationNode> configuration = instance.getConfiguration("sounds");
 		if (!configuration.isPresent())
 			return;
-		ConfigurationSection section = configuration.get().getConfigurationSection(node);
-		if (!section.getBoolean("enabled", true))
+		ConfigurationNode section = configuration.get().node(node);
+		if (!section.node("enabled").getBoolean(true))
 			return;
-		section = section.getConfigurationSection("sounds");
-		for (String key : section.getKeys(false)) {
-			this.sounds.add(new SourSound(section.getConfigurationSection(key), "CLICK"));
+		section = section.node("sounds");
+
+		try {
+			for (String key : section.getList(String.class)) {
+				this.sounds.add(new SourSound(section.node(key), "CLICK"));
+			}
+		} catch (SerializationException e) {
+			e.printStackTrace();
 		}
 	}
 
-	public SoundPlayer(SourBukkitPlugin instance, ConfigurationSection section) {
+	public SoundPlayer(SourBukkitPlugin instance, ConfigurationNode section) {
 		this.instance = instance;
-		if (!section.getBoolean("enabled", true))
+		if (!section.node("enabled").getBoolean(true))
 			return;
-		section = section.getConfigurationSection("sounds");
-		for (String node : section.getKeys(false)) {
-			this.sounds.add(new SourSound(section.getConfigurationSection(node), "CLICK"));
+		section = section.node("sounds");
+		try {
+			for (String key : section.getList(String.class)) {
+				this.sounds.add(new SourSound(section.node(key), "CLICK"));
+			}
+		} catch (SerializationException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -56,36 +60,26 @@ public class SoundPlayer {
 	}
 
 	public void playAt(Collection<Location> locations) {
-		playAt(locations.toArray(new Location[locations.size()]));		
+		playAt(locations.toArray(new Location[0]));
 	}
 
 	public void playAt(Location... locations) {
 		if (sounds.isEmpty())
 			return;
 		for (SourSound sound : getSorted()) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
-				@Override
-				public void run() {
-					sound.playAt(locations);
-				}
-			}, sound.getDelay());
+			Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> sound.playAt(locations), sound.getDelay());
 		}
 	}
 
 	public void playTo(Collection<Player> players) {
-		playTo(players.toArray(new Player[players.size()]));		
+		playTo(players.toArray(new Player[0]));
 	}
 
 	public void playTo(Player... player) {
 		if (sounds.isEmpty())
 			return;
 		for (SourSound sound : getSorted()) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
-				@Override
-				public void run() {
-					sound.playTo(player);
-				}
-			}, sound.getDelay());
+			Bukkit.getScheduler().scheduleSyncDelayedTask(instance, () -> sound.playTo(player), sound.getDelay());
 		}
 	}
 

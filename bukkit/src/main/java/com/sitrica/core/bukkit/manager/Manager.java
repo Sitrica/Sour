@@ -1,17 +1,18 @@
 package com.sitrica.core.bukkit.manager;
 
-import java.lang.reflect.Type;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.sitrica.core.bukkit.SourBukkitPlugin;
 import com.sitrica.core.common.database.Database;
 import com.sitrica.core.common.database.H2Database;
 import com.sitrica.core.common.database.MySQLDatabase;
 import com.sitrica.core.common.database.Serializer;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Listener;
+import org.spongepowered.configurate.ConfigurationNode;
+
+import java.lang.reflect.Type;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public abstract class Manager implements Listener {
 
@@ -24,17 +25,17 @@ public abstract class Manager implements Listener {
 
 	/**
 	 * 	database:
-		    # Types are MYSQL and H2.
-		    type: "H2"
-		    autosave: "5 minutes"
-		    # Table name configuration for databases.
-		    mines-table: "Mines"
-		    mysql:
-		        user: "root"
-		        address: "localhost"
-		        password: "password"
-		        name: "mines-example"
-	 * 	
+	 # Types are MYSQL and H2.
+	 type: "H2"
+	 autosave: "5 minutes"
+	 # Table name configuration for databases.
+	 mines-table: "Mines"
+	 mysql:
+	 user: "root"
+	 address: "localhost"
+	 password: "password"
+	 name: "mines-example"
+	 *
 	 * @param <T> The type of this database, used to format the database.
 	 * @param tableNode The table node within the configuration section that this database should map to.
 	 * @param type The type class the database will be.
@@ -50,19 +51,25 @@ public abstract class Manager implements Listener {
 		if (databases.containsKey(type))
 			return (Database<T>) databases.get(type);
 
-		ConfigurationSection section = instance.getConfig().getConfigurationSection("database");
+		Optional<ConfigurationNode> configuration = instance.getConfiguration();
+		if (!configuration.isPresent())
+			throw new IllegalAccessException("There was no config.yml found for " + instance.getName());
+
+		ConfigurationNode section = configuration.get().node("database");
 		if (section == null)
 			throw new IllegalAccessException("There was no database configuration section for " + instance.getName());
-		String table = section.getString(tableNode, tableNode);
 
-		if (section.getString("type", "H2").equalsIgnoreCase("H2"))
+		String table = section.node("table").getString(tableNode);
+
+		if (section.node("type").getString("H2").equalsIgnoreCase("H2"))
 			return getFileDatabase(instance, table, type, serializers);
 
-		String address = section.getString("mysql.address", "localhost");
-		String password = section.getString("mysql.password", "1234");
-		String name = section.getString("mysql.name", "username");
-		String user = section.getString("mysql.user", "root");
+		String address = section.node("mysql", "address").getString("localhost");
+		String password = section.node("mysql", "password").getString("1234");
+		String name = section.node("mysql", "name").getString("username");
+		String user = section.node("mysql", "user").getString("root");
 		Database<T> database = null;
+
 		try {
 			database = new MySQLDatabase<>(address, name, table, user, password, type, serializers);
 			instance.debugMessage("MySQL connection " + address + " was a success!");

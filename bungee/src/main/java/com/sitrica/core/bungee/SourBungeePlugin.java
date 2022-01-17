@@ -2,10 +2,8 @@ package com.sitrica.core.bungee;
 
 import com.sitrica.core.bungee.manager.Manager;
 import com.sitrica.core.common.SourPlugin;
-import com.sitrica.core.common.messaging.Formatting;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.config.Configuration;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -31,36 +29,19 @@ public abstract class SourBungeePlugin extends Plugin implements SourPlugin {
 	/**
 	 * Grabs the configuration defined by the String from the plugin.
 	 *
-	 * @param name The file name without it's file extension.
+	 * @param name The file name without its file extension.
 	 * @return Configuration if the plugin has registered such configuration.
 	 */
-	public abstract Optional<Configuration> getConfiguration(String name);
-
-	@Override
-	public void consoleMessage(String string) {
-		getProxy().getConsole().sendMessage(TextComponent.fromLegacyText(Formatting.color(prefix + string)));
-	}
-
-	@Override
-	public void debugMessage(String string) {
-		getConfig().ifPresent(configuration -> {
-			if (configuration.getBoolean("debug", false))
-				consoleMessage("&b" + string);
-		});
-	}
+	public abstract Optional<ConfigurationNode> getConfiguration(String name);
 
 	/**
-	 * Grab a Manager by it's class and create it if not present.
+	 * Grab a Manager by its class and create it if not present.
 	 *
 	 * @param <T> <T extends Manager>
 	 * @param expected The expected Class that extends Manager.
 	 * @return The Manager that matches the defined class.
 	 */
 	public abstract <T extends Manager> T getManager(Class<T> expected);
-
-	public Optional<Configuration> getConfig() {
-		return getConfiguration("config");
-	}
 
 	/**
 	 * @return The package names where managers exist to be registered.

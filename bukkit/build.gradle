@@ -2,15 +2,12 @@ plugins {
 	id 'eclipse'
 	id 'java-library'
 	id 'maven-publish'
-	id 'com.github.johnrengelman.shadow' version '5.2.0'
+	id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-jar.archiveName = "SourCore-Bukkit.jar"
 project.version = "1.1.2"
 
 repositories {
-	mavenCentral()
-
 	// Spigot
 	maven {
 		url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
@@ -19,15 +16,21 @@ repositories {
 }
 
 dependencies {
-	compile project(':common')
+	implementation project(':common')
 
-	// Spigot
-	compileOnly (group: 'org.spigotmc', name: 'spigot-api', version: '1.16.4-R0.1-SNAPSHOT')
+	// Bungeccord
+	compileOnly (group: 'org.spigotmc', name: 'spigot-api', version: '1.17.1-R0.1-SNAPSHOT')
+
+	// Adventure + Serializers (Provided by platform specific version)
+	compileOnly (group: 'net.kyori', name: 'adventure-api', version: '4.9.3')
+
+	// Configurate (Provided by loader specific version)
+	compileOnly (group: 'org.spongepowered', name: 'configurate-core', version: '4.1.2')
 }
 
 shadowJar {
-	classifier = ''
-	archiveFileName.set("SourCore-Bukkit.jar")
+	archivesBaseName = "SourCore-Bukkit"
+	archiveClassifier.set("")
 
 	minimize {
 		exclude(project(':common'))

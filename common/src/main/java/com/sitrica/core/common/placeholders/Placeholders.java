@@ -1,11 +1,9 @@
 package com.sitrica.core.common.placeholders;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-
 import com.google.common.collect.Lists;
+
+import java.util.*;
+import java.util.function.Function;
 
 public class Placeholders {
 
@@ -15,10 +13,19 @@ public class Placeholders {
 		placeholders.add(placeholder);
 	}
 
+	public static <T> void registerPlaceholder(Collection<String> syntaxes, Function<T, String> function) {
+		placeholders.add(new Placeholder<T>(syntaxes.toArray(new String[0])) {
+			@Override
+			public String replace(T object) {
+				return function.apply(object);
+			}
+		});
+	}
+
 	/**
 	 * Grab a placeholder by it's syntax.
 	 * Example: %command% to be replaced by a String command.
-	 * 
+	 *
 	 * @param syntax The syntax to grab e.g: %player%
 	 * @return The placeholder if the syntax was found.
 	 */

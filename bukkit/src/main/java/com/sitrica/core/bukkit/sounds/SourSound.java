@@ -3,8 +3,8 @@ package com.sitrica.core.bukkit.sounds;
 import com.sitrica.core.bukkit.utils.Fallback;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.spongepowered.configurate.ConfigurationNode;
 
 public class SourSound {
 
@@ -13,13 +13,13 @@ public class SourSound {
 	private final Sound sound;
 	private final int delay;
 
-	public SourSound(ConfigurationSection section, String fallback) {
-		String name = section.getString("sound", "ENTITY_PLAYER_LEVELUP");
+	public SourSound(ConfigurationNode section, String fallback) {
+		String name = section.node("sound").getString("ENTITY_PLAYER_LEVELUP");
 		this.sound = Fallback.soundAttempt(name, fallback);
-		this.volume = (float) section.getDouble("volume", 1);
-		this.pitch = (float) section.getDouble("pitch", 1);
-		this.enabled = section.getBoolean("enabled", true);
-		this.delay = section.getInt("delay", 0);
+		this.volume = (float) section.node("volume").getDouble(1);
+		this.pitch = (float) section.node("pitch").getDouble(1);
+		this.enabled = section.node("enabled").getBoolean(true);
+		this.delay = section.node("delay").getInt(0);
 	}
 
 	public SourSound(Sound sound, float pitch, float volume, boolean enabled) {

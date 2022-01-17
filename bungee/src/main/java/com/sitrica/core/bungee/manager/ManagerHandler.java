@@ -1,14 +1,13 @@
 package com.sitrica.core.bungee.manager;
 
+import com.sitrica.core.bungee.SourBungeePlugin;
+import com.sitrica.core.common.utils.Utils;
+import net.md_5.bungee.api.ProxyServer;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.sitrica.core.bungee.SourBungeePlugin;
-import com.sitrica.core.common.utils.Utils;
-
-import net.md_5.bungee.api.ProxyServer;
 
 public class ManagerHandler {
 
@@ -25,7 +24,6 @@ public class ManagerHandler {
 				} catch (InstantiationException | IllegalAccessException e) {
 					instance.consoleMessage("&dManager " + clazz.getName() + " doesn't have a nullable constructor.");
 					e.printStackTrace();
-					continue;
 				}
 			}
 		}
